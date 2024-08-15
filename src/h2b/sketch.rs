@@ -28,6 +28,7 @@ pub trait Sketch: Default {
 }
 
 /// M = 64, using two 64 bit integers to store the sketch
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 #[derive(Debug, Eq, PartialEq, Hash, Clone, Default)]
 pub struct M64 {
     low: u64,
@@ -42,7 +43,8 @@ impl Sketch for M64 {
     #[inline]
     #[allow(clippy::cast_possible_truncation)]
     fn val(&self, stream: u32) -> u8 {
-        debug_assert!(stream < Self::STREAMS);
+        debug_assert!(stream 
+          Self::STREAMS);
         let high_bit = (self.high >> stream) as u8 & 1;
         let low_bit = (self.low >> stream) as u8 & 1;
         high_bit << 1 | low_bit
@@ -98,6 +100,7 @@ impl Sketch for M64 {
 /// instructions for 128 bit integers.
 ///
 /// The implementation is similar to M64
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 #[derive(Debug, Eq, PartialEq, Hash, Clone, Default)]
 pub struct M128 {
     low: u128,
@@ -169,6 +172,7 @@ struct HiLoRegister {
 ///
 /// This is not meant to be used directly instead it serves as
 /// a base for the other vectored sketches
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 #[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
 pub struct M128Reg<const REGISTERS: usize> {
     registers: [HiLoRegister; REGISTERS],
